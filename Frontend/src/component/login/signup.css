@@ -1,0 +1,14 @@
+.space {
+    min-height: 18vh;
+}
+
+.sign-img img {
+    max-width: 100%;
+   max-height: 80vh;
+}
+.login-page a{
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: 200;
+
+}

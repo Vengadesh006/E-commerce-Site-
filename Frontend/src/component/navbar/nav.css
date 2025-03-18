@@ -1,0 +1,14 @@
+.navbar {
+    padding: 20px 10px;
+    background: transparent;
+}
+.nav-item {
+    margin: 0px 3px;
+}
+.nav-item a {
+    color: #101010;
+}
+.nav-item a:hover {
+    color: red;
+    border-bottom: 2px solid red;
+}

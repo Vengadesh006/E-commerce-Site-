@@ -1,0 +1,15 @@
+.card-space{
+    height: 13vh;
+}
+
+.addtocard {
+    font-weight: 500;
+    font-size: 16px;
+}
+.addtocard h5 {
+    font-weight: bold;
+    color: rgb(235, 44, 44);
+}
+.total {
+    color: rgb(0, 0, 0);
+}
