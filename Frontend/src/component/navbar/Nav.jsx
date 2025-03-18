@@ -21,7 +21,7 @@ export const Nav = () => {
     const [user, setUser] = useState(null)
 
     useEffect(() => {
-        if(token){
+        if (token) {
             const userNameFetch = async () => {
                 try {
                     const response = await API.get('user/', {
@@ -29,38 +29,35 @@ export const Nav = () => {
                             Authorization: `Token ${token}`
                         }
                     })
-    
+
                     setUser(response.data)
-    
+
                 }
                 catch (err) {
-                    console.log('fetch the Api from user name' +  err);
-    
+                    console.log('fetch the Api from user name' + err);
+
                 }
+            }
+            userNameFetch()
+
         }
-        userNameFetch()
-        
-        }
-        
+
     }, [token])
-    
 
     const logoutEvent = async () => {
-        const postApi = API.post('logout/',{}, {
-            headers : {
-                Authorization : `Token ${token}`
+        const postApi = API.post('logout/', {}, {
+            headers: {
+                Authorization: `Token ${token}`
             }
         })
-        .then(() => {
-            alert('Logout Successfully')
-            window.location.href = '/'
-        }
-    )
-        .catch(err => alert('Login Faild '+ err))
+            .then(() => {
+                alert('Logout Successfully')
+                window.location.href = '/'
+            }
+            )
+            .catch(err => alert('Login Faild ' + err))
 
     }
-
-
 
 
     return (
@@ -69,7 +66,7 @@ export const Nav = () => {
                 <nav>
                     <div className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
                         <div className="container">
-                            <Link className="navbar-brand" href="#"> {user ? `hai 👋 ${user}` : 'Welcome' }  </Link>
+                            <Link className="navbar-brand" href="#"> {user ? `hai 👋 ${user}` : 'Welcome'}  </Link>
                             <button className='navbar-toggler' data-bs-target='#NAVBARNAV' data-bs-toggle='collapse' >
                                 <span className='navbar-toggler-icon' ></span>
                             </button>
@@ -92,12 +89,12 @@ export const Nav = () => {
                                             <Link to='' className="nav-link" data-bs-target='#MODALFORM' data-bs-toggle='modal' > Login </Link>
                                         </li> :
                                         <li className="nav-item">
-                                            <Link to='' onClick={logoutEvent}  className="nav-link" data-bs-toggle='modal' > Logout </Link>
-                                        </li> 
+                                            <Link to='' onClick={logoutEvent} className="nav-link" data-bs-toggle='modal' > Logout </Link>
+                                        </li>
                                     }
                                     <li className="nav-item">
-                                            <Link to='/order' className="nav-link"> Order Items </Link>
-                                        </li>
+                                        <Link to='/order' className="nav-link"> Order Items </Link>
+                                    </li>
 
 
                                 </ul>
@@ -109,14 +106,14 @@ export const Nav = () => {
                     <Route path='/' element={<Home token={token} />}  > </Route>
                     <Route path='/fashion' element={<Fashion token={token} />}  > </Route>
                     <Route path='/fashion/:id' element={<GetFashion token={token} />}  > </Route>
-                    <Route path='/woman/:id'  element ={<WomenGet token = {token} />}  > </Route>
+                    <Route path='/woman/:id' element={<WomenGet token={token} />}  > </Route>
                     <Route path='/mobile' element={<Mobile token={token} />}  > </Route>
                     <Route path='/mobile/:id' element={<GetMobile token={token} />}  > </Route>
                     <Route path='/addcard' element={<AddtoCard token={token} />}  > </Route>
-                    <Route path='/order' element = {<OrderItems token={token} /> }> </Route>
+                    <Route path='/order' element={<OrderItems token={token} />}> </Route>
                     <Route path='/signup' element={<Signup />}  > </Route>
                     <Route path='*' element={<PageNotFoud />} />
-                   
+
                 </Routes>
 
 
