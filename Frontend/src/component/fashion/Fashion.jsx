@@ -5,11 +5,12 @@ import { MomenFa } from './MomenFa.jsx'
 import { cardData } from '../../App.jsx'
 
 
-export const Fashion = ({token}) => {
+export const Fashion = ({ token }) => {
 
-  const {card,setCard} = useContext(cardData)
+  const { card, setCard } = useContext(cardData)
+  const [isLoading, setIsloading] = useState(true)
 
-  
+
 
   const [fetchData, setFetchData] = useState([])
 
@@ -19,7 +20,7 @@ export const Fashion = ({token}) => {
       try {
         const res = await API.get('product/')
         setFetchData(res.data)
-        
+        setIsloading(false)
       }
       catch (err) {
         console.log(err);
@@ -27,9 +28,9 @@ export const Fashion = ({token}) => {
     }
     serverData()
 
-  },[])
+  }, [])
 
-  
+
 
 
   return (
@@ -38,23 +39,27 @@ export const Fashion = ({token}) => {
       <div className="container">
         <h2 className='text-center' > FASHION'S GATEGORY </h2>
         <hr style={{ borderBottom: '3px solid #000000' }} />
-        <div className="row">
-          {fetchData.map((item) => (
-            <div className="col mb-3" key={item.id}>
-              <div className="card fashion" style={{ width: '18rem' }} >
-                <img src={`http://localhost:8000/${item.image}`} alt={item.image} className='card-top-image' />
-                <div className="card-body">
-                  <h5 className="card-title text-center"> {item.name} </h5>
-                  <h6 className="card-title "> {item.desc} </h6>
-                  <p className='' > ₹{item.price} <span style={{ textDecoration: 'line-through' }} > ₹300 </span> </p>
-                  <div className="d-flex justify-content-around ">
-                    <a href={`/fashion/${item.id}`} className='btn btn-primary w-100'> Shop Now </a>
+
+        {isLoading ? <h5 className='text-center' > Loading .... </h5> :
+
+          <div className="row">
+            {fetchData.map((item) => (
+              <div className="col mb-3" key={item.id}>
+                <div className="card fashion" style={{ width: '18rem' }} >
+                  <img src={`http://localhost:8000/${item.image}`} alt={item.image} className='card-top-image' />
+                  <div className="card-body">
+                    <h5 className="card-title text-center"> {item.name} </h5>
+                    <h6 className="card-title "> {item.desc} </h6>
+                    <p className='' > ₹{item.price} <span style={{ textDecoration: 'line-through' }} > ₹300 </span> </p>
+                    <div className="d-flex justify-content-around ">
+                      <a href={`/fashion/${item.id}`} className='btn btn-primary w-100'> Shop Now </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        }
         <hr />
         <MomenFa />
 

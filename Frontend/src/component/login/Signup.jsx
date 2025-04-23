@@ -4,6 +4,8 @@ import sign_icon from '../Assets/fashion1.jpg';
 import API from '../Api';
 
 export const Signup = () => {
+    const [err , setErr] = useState({})
+
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -14,29 +16,51 @@ export const Signup = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const isValidation = () => {
+        const newErr = {}
+        const passwordPattern =  /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/
+        const EmailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+        if(!formData.username.trim()){
+            newErr.username = "username is required"
+        }
+        if(!formData.password.trim()){
+            newErr.password = "password is requied"
+        }
+        else if(!passwordPattern.test(formData.password)){
+            newErr.password = "Password must be at least 8 character,include one uppercase, lowercase , number and speical character"
+        }
+        if(!formData.email.trim()){
+            newErr.email = "email is requied"
+
+        }
+        else if(!EmailPattern.test(formData.email)){
+            newErr.email = "invalid email formate"
+        }
+        return newErr
+    }
+
     const formSubmit = async (e) => {
         e.preventDefault();
+        const ValidateErr = isValidation()
+        setErr(ValidateErr)
 
-        if (!formData.username || !formData.password || !formData.email) {
-            alert('All fields are required!');
-            return;
+        if(Object.keys(ValidateErr).length === 0){
+            
+            try {
+                await dataPost();
+                setFormData({
+                    username: '',
+                    password: '',
+                    email: '',
+                });
+
+            } catch (error) {
+                console.error('Signup failed:', error);
+            }
         }
 
-        if (formData.password.length < 6) {
-            alert('Password must be at least 6 characters long!');
-            return;
-        }
-
-        try {
-            await dataPost();
-            setFormData({
-                username: '',
-                password: '',
-                email: '',
-            });
-        } catch (error) {
-            console.error('Signup failed:', error);
-        }
+        
     };
 
     const dataPost = async () => {
@@ -60,6 +84,7 @@ export const Signup = () => {
                         <form action="/submit" method="POST" onSubmit={formSubmit}>
                             <h5 className="text-center mb-4">Sign-up Create User Account</h5>
                             <div className="form-group mb-3">
+
                                 <label className="form-label">User Name:</label>
                                 <input
                                     type="text"
@@ -68,8 +93,9 @@ export const Signup = () => {
                                     placeholder="Enter your new username"
                                     onChange={formChangeData}
                                     value={formData.username}
-                                    required
+                                    
                                 />
+                                {err.username && <small className='text-danger mx-2' > {err.username} </small> }
                             </div>
                             <div className="form-group mb-4">
                                 <label className="form-label">Password:</label>
@@ -80,8 +106,9 @@ export const Signup = () => {
                                     placeholder="Enter your new password"
                                     onChange={formChangeData}
                                     value={formData.password}
-                                    required
+                                    
                                 />
+                                {err.password && <small className='text-danger mx-2' > {err.password} </small> }
                             </div>
                             <div className="form-group mb-4">
                                 <label htmlFor="email" className="form-label">Email:</label>
@@ -93,8 +120,9 @@ export const Signup = () => {
                                     placeholder="Enter your email"
                                     onChange={formChangeData}
                                     value={formData.email}
-                                    required
+                                    
                                 />
+                                 {err.email && <small className='text-danger mx-2' > {err.email} </small> }
                             </div>
 
                             <div className="d-flex justify-content-center">

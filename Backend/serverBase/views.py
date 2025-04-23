@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # User Info API
 class userNameView(APIView): 
-    def get(self, request):
+    def get(self, request): 
        
         return request.user
 

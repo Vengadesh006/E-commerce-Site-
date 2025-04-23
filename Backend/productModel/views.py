@@ -25,7 +25,7 @@ class HomeView(APIView) :
                 serializer = HomeSerializer(obj,many=True)
                 return Response(serializer.data)
         except Home.DoesNotExist: 
-            return Response({'mes' : 'Home Not Foun'}, status=400 )
+            return Response({'mes' : 'Home Not Found'}, status=400 )
 
     def post(self,req) : 
         serializer = HomeSerializer(data=req.data) 
@@ -218,7 +218,6 @@ class LoginView(APIView):
             login(request, user)
 
             token, _ = Token.objects.get_or_create(user=user)
-            print(request.user)
             return Response({
                 "token": token.key,
                 "message": "Authentication successful"
@@ -231,12 +230,18 @@ class LoginView(APIView):
 #Logout page  
 class Logout(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
+
         user = request.user
+
         if hasattr(user, 'auth_token') : 
+
             user.auth_token.delete()
-        logout(request)
-        return Response({"message": "Logged out successfully"}, status=200)
+
+            logout(request)
+
+            return Response({"message": "Logged out successfully"}, status=200)
 
 
 
