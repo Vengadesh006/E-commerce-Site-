@@ -48,7 +48,7 @@ export const Signup = () => {
         if(Object.keys(ValidateErr).length === 0){
             
             try {
-                await dataPost();
+                await dataPost()
                 setFormData({
                     username: '',
                     password: '',
@@ -62,6 +62,8 @@ export const Signup = () => {
 
         
     };
+    
+    
 
     const dataPost = async () => {
         try {

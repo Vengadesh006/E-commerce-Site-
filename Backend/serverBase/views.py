@@ -10,9 +10,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # User Info API
 class userNameView(APIView): 
-    def get(self, request): 
-       
-        return request.user
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return Response({'userName' : request.user.username},status=201)
 
 
 # Add to Cart API

@@ -4,21 +4,17 @@ import API from '../Api'
 import { cardData } from '../../App'
 
 
-export const GetMobile = ({token}) => {
+export const GetMobile = ({token, user}) => {
     const {id} = useParams()
     const [fetchData,setFashionData] = useState([])
     const [count , setCount] = useState(1)
     const {card,setCard} = useContext(cardData)
-    console.log("token : ",token);
     
-
 
     useEffect(() => {
         const serverData = async () => {
             try{
-            const res = await API.get(`mobile/${id}/`,{
-                headers : `Token ${token}`
-            })
+            const res = await API.get(`mobile/${id}/`)
             setFashionData(Array.isArray(res.data) ? res.data : [res.data])
         }
         catch(err)  {
@@ -50,21 +46,27 @@ export const GetMobile = ({token}) => {
      }
 
      const orderList = async (item) => {
-        try {
-            const response = await API.post('order/', {
-                content_type : 'mobile', 
-                object_id : item.id, 
-                quantity : count,
-            }, {
-                headers : {
-                    Authorization : `Token ${token}`
-                }
-            })
-            setCard(response.data)
-            alert('order is comfirmed  ')
-            
-        }catch(err) {
-            console.log(err)
+        if(user !== null) {
+            try {
+                const response = await API.post('order/', {
+                    content_type : 'mobile', 
+                    object_id : item.id, 
+                    quantity : count,
+                }, {
+                    headers : {
+                        Authorization : `Token ${token}`
+                    }
+                })
+                setCard(response.data)
+                alert('order is comfirmed  ')
+                
+            }catch(err) {
+                console.log(err)
+            }
+
+        }
+        else{
+            alert('Please Going to loging')
         }
 
 

@@ -5,7 +5,8 @@ import { cardData } from '../../App';
 
 
 
-export const GetFashion = ({token}) => {
+
+export const GetFashion = ({ token, user }) => {
 
 
   const { card, setCard } = useContext(cardData)
@@ -18,12 +19,7 @@ export const GetFashion = ({token}) => {
   useEffect(() => {
     const serverData = async () => {
       try {
-        const res = await API.get(`product/${id}/` , {
-          headers : {
-            Authorization : `Token ${token}`
-          }
-        });
-
+        const res = await API.get(`product/${id}/`);
         setFashionData(Array.isArray(res.data) ? res.data : [res.data])
       } catch (err) {
         console.error(err);
@@ -35,36 +31,44 @@ export const GetFashion = ({token}) => {
 
   const AddtoCardFun = async (item) => {
 
-   const response = await API.post('addtocard/' , {
-      'content_type' : 'product', 
-      'object_id' : item.id, 
-      'quantity' : count
+    const response = await API.post('addtocard/', {
+      'content_type': 'product',
+      'object_id': item.id,
+      'quantity': count
     }, {
-      headers : {
-        Authorization : `Token ${token}`
+      headers: {
+        Authorization: `Token ${token}`
       }
     })
-    .then(res => alert('Add to Card Successfull'))
-    .catch(err =>   setMessage("No items in the cart."))
+      .then(res => alert('Add to Card Successfull'))
+      .catch(err => setMessage("No items in the cart."))
 
   }
 
   const OrderItems = async (item) => {
 
-    const response = await API.post('order/' , {
-       'content_type' : 'product', 
-       'object_id' : item.id, 
-       'quantity' : count
-     }, {
-       headers : {
-         Authorization : `Token ${token}`
-       }
-     })
-     .then(res => alert('order comfirm Successfull'))
-     .catch(err =>   setMessage("No items in the order."))
- 
-   }
- 
+    if (user !== null) {
+      const response = await API.post('order/', {
+        'content_type': 'product',
+        'object_id': item.id,
+        'quantity': count
+      }, {
+        headers: {
+          Authorization: `Token ${token}`
+        }
+      })
+        .then(res => alert('order comfirm Successfull'))
+        .catch(err => setMessage("No items in the order."))
+
+    }
+    else{
+      alert('going to Logging !')
+    }
+
+  }
+
+
+
 
   return (
     <>
@@ -86,8 +90,9 @@ export const GetFashion = ({token}) => {
               </div>
 
               <div className="d-flex">
-                <button onClick={() => OrderItems(item) } className='btn btn-primary' > Buy Now </button>
-                
+
+                <button onClick={() => OrderItems(item)} className='btn btn-primary' > Buy Now </button>
+
                 <button onClick={() => AddtoCardFun(item)} className='btn btn-danger mx-2' > Add to Card </button>
               </div>
             </div>
@@ -95,6 +100,7 @@ export const GetFashion = ({token}) => {
           </div>
         ))}
       </div>
+
 
 
     </>

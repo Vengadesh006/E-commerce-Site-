@@ -17,32 +17,23 @@ import { OrderItems } from '../order/OrderItems'
 
 export const Nav = () => {
     const token = localStorage.getItem('auth_token')
+    console.log(token);
+    
 
     const [user, setUser] = useState(null)
+    console.log(user);
+    
 
     useEffect(() => {
-        if (token) {
-            const userNameFetch = async () => {
-                try {
-                    const response = await API.get('user/', {
-                        headers: {
-                            Authorization: `Token ${token}`
-                        }
-                    })
-
-                    setUser(response.data)
-
-                }
-                catch (err) {
-                    console.log('fetch the Api from user name' + err);
-
-                }
+        API.get('user/',{
+            headers : {
+                Authorization : `Token ${token} `
             }
-            userNameFetch()
-
-        }
-
-    }, [token])
+        })
+        .then(res => setUser(res.data.userName))
+        .catch(err => console.log('please going to login'))
+       
+    },[])
 
     const logoutEvent = async () => {
         const postApi = API.post('logout/', {}, {
@@ -56,9 +47,7 @@ export const Nav = () => {
             }
             )
             .catch(err => alert('Login Faild ' + err))
-
     }
-
 
     return (
         <>
@@ -105,10 +94,10 @@ export const Nav = () => {
                 <Routes>
                     <Route path='/' element={<Home token={token} />}  > </Route>
                     <Route path='/fashion' element={<Fashion token={token} />}  > </Route>
-                    <Route path='/fashion/:id' element={<GetFashion token={token} />}  > </Route>
+                    <Route path='/fashion/:id' element={<GetFashion token={token} user = {user} />}  > </Route>
                     <Route path='/woman/:id' element={<WomenGet token={token} />}  > </Route>
                     <Route path='/mobile' element={<Mobile token={token} />}  > </Route>
-                    <Route path='/mobile/:id' element={<GetMobile token={token} />}  > </Route>
+                    <Route path='/mobile/:id' element={<GetMobile token={token} user = {user} />}  > </Route>
                     <Route path='/addcard' element={<AddtoCard token={token} />}  > </Route>
                     <Route path='/order' element={<OrderItems token={token} />}> </Route>
                     <Route path='/signup' element={<Signup />}  > </Route>

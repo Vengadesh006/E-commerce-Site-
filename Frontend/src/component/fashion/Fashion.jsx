@@ -9,17 +9,14 @@ export const Fashion = ({ token }) => {
 
   const { card, setCard } = useContext(cardData)
   const [isLoading, setIsloading] = useState(true)
-
-
-
   const [fetchData, setFetchData] = useState([])
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
-
     const serverData = async () => {
       try {
-        const res = await API.get('product/')
-        setFetchData(res.data)
+        const response = await API.get('product/')
+        setFetchData(response.data)
         setIsloading(false)
       }
       catch (err) {
@@ -27,46 +24,56 @@ export const Fashion = ({ token }) => {
       }
     }
     serverData()
-
   }, [])
 
-
-
-
   return (
+
+
     <>
-      <div className="space" />
+      <div className="space"></div>
+      <h5 className='text-center' > Product Gallry  </h5>
+      <hr />
       <div className="container">
-        <h2 className='text-center' > FASHION'S GATEGORY </h2>
-        <hr style={{ borderBottom: '3px solid #000000' }} />
+        <input type="text" className='form-control mb-4 shadow-sm p-2'
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder='SEARCH PRODUCT ....'
+        />
+        {isLoading ?    (<div className='d-flex justify-content-center' >
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden ">Loading...</span>
+        </div>
+        </div>) : 
+      
 
-        {isLoading ? <h5 className='text-center' > Loading .... </h5> :
-
-          <div className="row">
-            {fetchData.map((item) => (
-              <div className="col mb-3" key={item.id}>
-                <div className="card fashion" style={{ width: '18rem' }} >
-                  <img src={`http://localhost:8000/${item.image}`} alt={item.image} className='card-top-image' />
+       ( <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+          {fetchData.filter((items) => search.toLowerCase() === '' ? items : items.name.toLowerCase().includes(search))
+            .map((items) => (
+              <div className="col" key={items.id} >
+                <div className="card h-100">
                   <div className="card-body">
-                    <h5 className="card-title text-center"> {item.name} </h5>
-                    <h6 className="card-title "> {item.desc} </h6>
-                    <p className='' > ₹{item.price} <span style={{ textDecoration: 'line-through' }} > ₹300 </span> </p>
-                    <div className="d-flex justify-content-around ">
-                      <a href={`/fashion/${item.id}`} className='btn btn-primary w-100'> Shop Now </a>
-                    </div>
+                    <img src={`http://localhost:8000/${items.image}`} style={{ height: '300px', objectFit: 'cover' }} className='card-img-top' alt="" />
+                    <h6 className="card-title  "> {items.name} </h6>
+                    <p className='card-text text-muted' > {items.desc} </p>
+                    <p className='card-text fs-bold'>${items.price} </p>
+                    <a href={`fashion/${items.id}`} className='btn btn-primary w-100' > Show Now </a>
                   </div>
                 </div>
+
               </div>
-            ))}
-          </div>
-        }
-        <hr />
-        <MomenFa />
-
-
-
+            ))
+          }
+        </div>)
+}
+<MomenFa searchBar = {search}  />
       </div>
+      
+    
+
+
+
 
     </>
   )
+
+
 }

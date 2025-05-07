@@ -3,7 +3,21 @@ import API from '../Api';
 import { useNavigate } from 'react-router-dom';
 
 export const Modal = () => {
-    const navigate = useNavigate();
+
+    const navigate = useNavigate()
+
+    const [err,setErr] = useState({})
+
+    const isValidation = () => {
+        const newErr = {}
+        if(!formData.username.trim()){
+            newErr.username = "user name is required"
+        }
+        if(!formData.password.trim()){
+            newErr.password = "password is required"
+        }
+        return newErr
+    }
 
     const [formData, setFormData] = useState({
         username: "",
@@ -13,21 +27,32 @@ export const Modal = () => {
     const handleEvent = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+    
 
     const FormSubmit = async (e) => {
         e.preventDefault();
+        const val = isValidation()
+        setErr(val)
+     
+       if(Object.keys(val).length === 0 ){
         try {
             const response = await API.post('login/', formData);
+            console.log(formData);
+            
             localStorage.setItem('auth_token', response.data.token);
             alert('Logged in Successfully');
             setFormData({
                 username : '',
                 password : ''
-            })
-            window.location.href = '/'
-        } catch (err) {
-            alert('Login failed check User name or password ');
+        })
+        window.location.href = '/'
+        
         }
+         catch (err) {
+            console.log("signup page",err)
+        }
+
+       }    
     };
 
     return (
@@ -51,8 +76,9 @@ export const Modal = () => {
                                         className="form-control"
                                         placeholder="Enter your username"
                                         onChange={handleEvent}
-                                        required
+                                        value={formData.username}
                                     />
+                                    {err.username && <small className='text-danger' > {err.username} </small>}
                                 </div>
                                 <div className="form-group my-3">
                                     <label htmlFor="password" className="form-label">Password:</label>
@@ -63,8 +89,9 @@ export const Modal = () => {
                                         className="form-control"
                                         placeholder="Enter your password"
                                         onChange={handleEvent}
-                                        required
+                                        value={formData.password}
                                     />
+                                    {err.password && <small className='text-danger' > {err.password} </small>}
                                 </div>
                                 <div className="d-flex justify-content-between login-page">
                                     <a href="signup">Create Account</a>

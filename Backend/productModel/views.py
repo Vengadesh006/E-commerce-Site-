@@ -3,18 +3,25 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny , IsAuthenticated 
-from rest_framework.authentication import TokenAuthentication
-#
 from .serializers import *
 from django.contrib.auth import authenticate, login , logout
 from .models import *
 from django.contrib.auth.models import User
 from rest_framework import status
+import logging
+
+logger = logging.getLogger(__name__)
+
+auth_user = None
 
 class HomeView(APIView) : 
+
     permission_classes = [AllowAny]
+
     def get(self,req,id=None) :
-        print(req.user)
+
+        print(auth_user)
+        
         try :   
             if id is not None :
                 details = Home.objects.get(id=id)
@@ -46,7 +53,7 @@ class HomeView(APIView) :
     def delete(self,req,id) :
         try : 
             obj = Home.objects.get(id = id)
-            serializer.delete()
+            obj.delete()
             return Response({'mes' : 'Home delete from dataabse'}, status=200)
         except Home.DoesNotExist : 
             return Response({'message': 'Home not found'}, status=404)
@@ -58,6 +65,8 @@ class ProductView(APIView) :
     permission_classes = [AllowAny]
 
     def get(self, req, id=None) :
+        print(auth_user)
+        print(req.user)
         try :   
             if id is not None :
                 details = Product.objects.get(id=id)
@@ -188,17 +197,15 @@ class SignupView(APIView):
 
     def post(self, request):
         try:
-            serializer = SignupSerializer(data=request.data)
-            
+            serializer = SignupSerializer(data=request.data)            
             if serializer.is_valid():
-                print(serializer)
                 user = serializer.save()  # Prevent premature save
                 user.set_password(request.data['password'])  # Hash password
                 user.save()  # Now save the user
                 return Response({'message': 'User created successfully :)'}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'message': 'An error occurred while creating the user.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'message': f'An error occurred while creating the user.{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LoginView(APIView):
@@ -209,22 +216,24 @@ class LoginView(APIView):
         password = request.data.get('password')
 
         if not username or not password:
-            print('user err')
-            return Response({'mes': 'Username and password are required'}, status=400)
+            logger.warning("Username and/or password missing")
+            return Response({'mes': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(username=username, password=password)
 
         if user:
+
             login(request, user)
 
             token, _ = Token.objects.get_or_create(user=user)
+            
             return Response({
                 "token": token.key,
-                "message": "Authentication successful"
-            }, status = 200)
+                "message": "Authentication successful",
+                "username" : auth_user
+            }, status=status.HTTP_200_OK)
 
-        
-        return Response({'mes': 'Invalid credentials'}, status= 400)
+        return Response({'mes': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #Logout page  
