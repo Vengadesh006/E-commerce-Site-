@@ -58,9 +58,7 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',  # Use Token Authentication
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.TokenAuthentication')  # Use Token Authentication
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -71,8 +69,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 ROOT_URLCONF = 'Backend.urls'
-
-
 
 TEMPLATES = [
     {

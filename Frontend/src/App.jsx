@@ -9,13 +9,11 @@ function App() {
 
   const [card,setCard] = useState([])
 
-
   return (
     <>
-    <cardData.Provider value={{card,setCard}}  >
-      <Nav />
-    </cardData.Provider>
-     
+      <cardData.Provider value={{card,setCard}}  >
+        <Nav />
+      </cardData.Provider>
     </>
   )
 }

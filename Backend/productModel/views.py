@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.response import Response 
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -44,7 +43,7 @@ class HomeView(APIView) :
     def patch(self,req,id) :
         data = req.data
         Home_id = Home.objects.get(id = id)
-        serializer = HomeSerializer(Home_id,data = data , partial = True)
+        serializer = HomeSerializer(Home_id,data = data,partial = True)
         if serializer.is_valid() : 
             serializer.save()
             return Response(serializer.data)
@@ -65,8 +64,6 @@ class ProductView(APIView) :
     permission_classes = [AllowAny]
 
     def get(self, req, id=None) :
-        print(auth_user)
-        print(req.user)
         try :   
             if id is not None :
                 details = Product.objects.get(id=id)
@@ -77,7 +74,7 @@ class ProductView(APIView) :
                 serializer = ProductSerializer(obj,many=True)
                 return Response(serializer.data)
         except Product.DoesNotExist: 
-            return Response({'mes' : 'Product Not Foun'}, status=400 )
+            return Response({'mes' : 'Product Not Fount'}, status=400 )
 
     def post(self,req) : 
         serializer = ProductSerializer(data=req.data) 
